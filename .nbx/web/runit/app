@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# redirect stderr to stdout
+exec 2>&1
+
+# cd into the build bundle
+cd /app/bundle
+
+# start the server
+exec node main.js

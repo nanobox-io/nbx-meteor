@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+# create the log directory if it doesn't exist
+mkdir -p /var/log/runit/app
+
+# tell svlogd to drop the stdout into our custom location
+cd /var/log/runit/app
+exec svlogd -v -ttt /var/log/runit/app
