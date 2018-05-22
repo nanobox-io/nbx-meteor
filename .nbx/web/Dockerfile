@@ -15,16 +15,15 @@ ARG NODE_VERSION=v8.11.1
 RUN apt-get update -q && apt-get clean
 
 # install dependencies
-RUN apt-get install -y runit
+RUN apt-get install -y \
+      runit \
+      curl
 
 # install meteor
 RUN curl https://install.meteor.com/ | sh
 
 # install node
 RUN \
-    # install curl so we can fetch the node version
-    apt-get install -y curl && \
-    
     # fetch the nodejs version as specified in the ARG above ^
     curl https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-x64.tar.gz \
       > /tmp/required-node-linux-x64.tar.gz && \
@@ -36,8 +35,8 @@ RUN \
       -xzf /tmp/required-node-linux-x64.tar.gz && \
       
     # cleanup
-    rm /tmp/required-node-linux-x64.tar.gz && \
-    apt-get --purge autoremove curl -y
+    rm /tmp/required-node-linux-x64.tar.gz
+    
 
 # setup runit service definition:
 RUN mkdir -p /etc/service/app
@@ -71,7 +70,8 @@ RUN cd /app/bundle/programs/server && \
 # cleanup
 RUN rm /usr/local/bin/meteor && \
     rm -rf ~/.meteor && \
-    rm -rf /src
+    rm -rf /src && \
+    apt-get --purge autoremove curl -y
 
 # run runit services
 CMD ["runsvdir", "-P", "/etc/service"]
