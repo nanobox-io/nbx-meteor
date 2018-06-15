@@ -3,6 +3,9 @@
 # create the log directory if it doesn't exist
 mkdir -p /var/log/runit/app
 
+# ensure svlogd doesn't try to rotate log files - narc will do that
+echo 's0' > /var/log/runit/app/config
+
 # tell svlogd to drop the stdout into our custom location
 cd /var/log/runit/app
 exec svlogd -v -ttt /var/log/runit/app
