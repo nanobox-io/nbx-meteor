@@ -19,8 +19,17 @@ RUN apt-get install -y \
       runit \
       curl
 
-# install meteor
-RUN curl https://install.meteor.com/ | sh
+# install meteor - meteor installer doesn't work with the default tar binary
+# see https://github.com/coreos/bugs/issues/1095
+RUN apt-get install -y bsdtar \
+    && cp $(which tar) $(which tar)~ \
+    && ln -sf $(which bsdtar) $(which tar)
+
+# install Meteor forcing its progress
+RUN curl "https://install.meteor.com/" | sh
+
+# put back the original tar
+RUN mv $(which tar)~ $(which tar)
 
 # install node
 RUN \
